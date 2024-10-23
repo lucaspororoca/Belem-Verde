@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acomodações - COP30</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="container">
+        <img src="https://snoopy.archdaily.com/images/archdaily/media/images/668c/3086/5de6/1a2b/abfb/3eb6/medium_jpg/reforma-de-interiores-almenat-hilton-hotel-bloco-arquitetos_35.jpg?1720463516&format=webp&width=680&height=516&crop=true" alt="">
+        
+        <div id="div-1">
+            <h2 id="font-type-1">Hospedagem - Belem</h2>
+            <form action="resultados.html" method="GET">
+                <label id="font-type-1">Localização:</label>
+                <br>
+                <input type="text" id="location" placeholder="Ex: Belém, PA">
+                <br>
+                <label id="font-type-1">Faixa de Preço (BRL):</label>
+                <br>
+                <input type="number" id="price" placeholder="Máximo">
+                <br>
+                <label id="font-type-1">Capacidade Mínima:</label>
+                <br>
+                <input type="number" id="capacity" placeholder="Ex: 2 pessoas">
+                <br>
+                <button type="submit">Filtrar</button>
+            </form>
+            
+            <script src="js/salva_form.js"></script>
+            
+            <div id="div-3">
+                <div id="div-2"></div>
+
+                <h2 id="font-type-2">Cadastrar Nova Acomodação</h2>
+                <form id="accommodation-form">
+                    <label id="font-type-2">Nome:</label>
+                    <br>
+                    <input id="input-type-1" type="text" id="name" required>
+                    <br>
+                    <label id="font-type-2">Descrição:</label>
+                    <br>
+                    <input id="input-type-1" type="text" id="description" required>
+                    <br>
+                    <label id="font-type-2">Preço (BRL):</label>
+                    <br>
+                    <input id="input-type-1" type="number" id="price" required>
+                    <br>
+                    <label id="font-type-2">Localização:</label>
+                    <br>
+                    <input id="input-type-1" type="text" id="newLocation" required>
+                    <br>
+                    <label id="font-type-2">Capacidade:</label>
+                    <br>
+                    <input id="input-type-1" type="number" id="capacity" required>
+                    <br><br>
+                    <button type="submit">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
