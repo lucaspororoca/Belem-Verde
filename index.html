@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Belém Verde</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #2e8b57;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-item input {
+            margin-right: 8px;
+        }
+        
+        button {
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #3cb371;
+        }
+        
+        .success-message {
+            color: #2e8b57;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .error-message {
+            color: #ff4500;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro</h1>
+        
+        <div class="form-group">
+            <label for="nome">Nome Completo:</label>
+            <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="username">Nome de Usuário:</label>
+            <input type="text" id="username" placeholder="Digite um nome de usuário" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Digite seu email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" placeholder="Digite uma senha" required minlength="6">
+        </div>
+        
+        <div class="form-group">
+            <label for="confirmarSenha">Confirmar Senha:</label>
+            <input type="password" id="confirmarSenha" placeholder="Confirme sua senha" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="idade">Idade:</label>
+            <input type="number" id="idade" placeholder="Digite sua idade" required min="18">
+        </div>
+        
+        <div class="form-group">
+            <label for="genero">Gênero:</label>
+            <select id="genero" required>
+                <option value="">Selecione...</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Outro">Outro</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="nacionalidade">Nacionalidade:</label>
+            <select id="nacionalidade" required>
+                <option value="">Selecione...</option>
+                <option value="Brasil">Brasil</option>
+                <option value="Alemanha">Alemanha</option>
+                <option value="EUA">EUA</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="cidade">Cidade:</label>
+            <select id="cidade" disabled required>
+                <option value="">Selecione primeiro a nacionalidade</option>
+            </select>
+        </div>
+        
+        <div class="checkbox-group">
+            <div class="checkbox-item">
+                <input type="radio" id="visitor" name="tipo" value="visitor" required>
+                <label for="visitor">Visitor</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="radio" id="angel" name="tipo" value="angel">
+                <label for="angel">Angel</label>
+            </div>
+        </div>
+        
+        <button id="cadastrar">Cadastrar</button>
+        
+        <div id="success-message" class="success-message">
+            Cadastro realizado com sucesso!
+        </div>
+        
+        <div id="error-message" class="error-message">
+            Erro no cadastro. Por favor, tente novamente.
+        </div>
+    </div>
+
+    <script>
+        const cidadesPorPais = {
+            "Brasil": ["Belém", "São Paulo", "Rio de Janeiro"],
+            "Alemanha": ["Berlim", "Munique", "Hamburgo"],
+            "EUA": ["Nova York", "Los Angeles", "Chicago"]
+        };
+
+        async function hashPassword(password, salt) {
+            const encoder = new TextEncoder();
+            const keyMaterial = await window.crypto.subtle.importKey(
+                'raw',
+                encoder.encode(password),
+                { name: 'PBKDF2' },
+                false,
+                ['deriveBits']
+            );
+            const derivedBits = await window.crypto.subtle.deriveBits(
+                {
+                    name: 'PBKDF2',
+                    salt: encoder.encode(salt),
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                256
+            );
+            const hashArray = Array.from(new Uint8Array(derivedBits));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        document.getElementById('nacionalidade').addEventListener('change', function() {
+            const pais = this.value;
+            const cidadeSelect = document.getElementById('cidade');
+            
+            cidadeSelect.innerHTML = '';
+            cidadeSelect.disabled = !pais;
+            
+            if (pais) {
+                const optionPadrao = document.createElement('option');
+                optionPadrao.value = "";
+                optionPadrao.textContent = "Selecione uma cidade";
+                cidadeSelect.appendChild(optionPadrao);
+                
+                cidadesPorPais[pais].forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade;
+                    option.textContent = cidade;
+                    cidadeSelect.appendChild(option);
+                });
+                cidadeSelect.disabled = false;
+            } else {
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "Selecione primeiro a nacionalidade";
+                cidadeSelect.appendChild(option);
+                cidadeSelect.disabled = true;
+            }
+        });
+
+        document.getElementById('cadastrar').addEventListener('click', async function() {
+            const nome = document.getElementById('nome').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = document.getElementById('confirmarSenha').value;
+            const idade = document.getElementById('idade').value;
+            const genero = document.getElementById('genero').value;
+            const nacionalidade = document.getElementById('nacionalidade').value;
+            const cidade = document.getElementById('cidade').value;
+            const isVisitor = document.getElementById('visitor').checked;
+            const isAngel = document.getElementById('angel').checked;
+
+            if (senha !== confirmarSenha) {
+                alert("As senhas não coincidem!");
+                return;
+            }
+
+            if (!isVisitor && !isAngel) {
+                alert("Selecione um tipo de usuário!");
+                return;
+            }
+
+            try {
+                const salt = window.crypto.getRandomValues(new Uint8Array(16)).join('');
+                const senhaHash = await hashPassword(senha, salt);
+
+                const cadastroData = {
+                    username: username,
+                    nome: nome,
+                    email: email,
+                    senha: senhaHash,
+                    salt: salt,
+                    idade: parseInt(idade),
+                    genero: genero,
+                    nacionalidade: nacionalidade,
+                    cidade: cidade,
+                    idiomas: "[]",
+                    disponibilidade: 0,
+                    is_visitor: isVisitor ? 1 : 0,
+                    is_angel: isAngel ? 1 : 0
+                };
+
+                const endpoint = isVisitor ? "CadastrarVisitor" : "CadastrarAngel";
+                
+                const response = await fetch(`http://localhost:3000/api/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(cadastroData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(await response.text());
+                }
+
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+                
+                document.querySelectorAll('input').forEach(input => {
+                    if (input.type !== 'radio') {
+                        input.value = '';
+                    }
+                });
+                document.getElementById('genero').selectedIndex = 0;
+                document.getElementById('nacionalidade').selectedIndex = 0;
+                document.getElementById('cidade').innerHTML = '<option value="">Selecione primeiro a nacionalidade</option>';
+                document.getElementById('cidade').disabled = true;
+                document.getElementById('visitor').checked = false;
+                document.getElementById('angel').checked = false;
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('error-message').textContent = error.message || "Erro no cadastro";
+                document.getElementById('error-message').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
