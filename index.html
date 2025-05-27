@@ -103,7 +103,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Cadastro</h1>
+        <h1>Cadastro Belém mais Verde</h1>
         
         <div class="form-group">
             <label for="nome">Nome Completo:</label>
@@ -170,6 +170,14 @@
             <div class="checkbox-item">
                 <input type="radio" id="angel" name="tipo" value="angel">
                 <label for="angel">Angel</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="radio" id="estudante" name="tipo" value="angel">
+                <label for="Estudante">Estudante</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="radio" id="estudanteEstrangeiro" name="tipo" value="angel">
+                <label for="Estudante Estrangeiro">Estudante Estrangeiro</label>
             </div>
         </div>
         
@@ -255,6 +263,8 @@
             const cidade = document.getElementById('cidade').value;
             const isVisitor = document.getElementById('visitor').checked;
             const isAngel = document.getElementById('angel').checked;
+            const isEstudante = document.getElementById('estudante').checked;
+            const isEstudanteEstrangeiro = document.getElementById('etudanteEstrangeiro').checked;
 
             if (senha !== confirmarSenha) {
                 alert("As senhas não coincidem!");
@@ -283,10 +293,26 @@
                     idiomas: "[]",
                     disponibilidade: 0,
                     is_visitor: isVisitor ? 1 : 0,
-                    is_angel: isAngel ? 1 : 0
+                    is_angel: isAngel ? 1 : 0,
+                    is_estudanteEstrangeiro: isEstudanteEstrangeiro ? 1 : 0,
+                    is_estudante: isEstudante ? 1 : 0
                 };
 
-                const endpoint = isVisitor ? "CadastrarVisitor" : "CadastrarAngel";
+                if(isVisitor === 1){
+                    const endpoint = "CadastrarVisitor";
+                }
+
+                if(isAngel === 1){
+                    const endpoint = "CadastrarAngel";
+                }
+
+                if(isEstudanteEstrangeiro === 1){
+                    const endpoint = "CadastrarEstudanteEstrangeiro";
+                }
+
+                if(isEstudante === 1){
+                    const endpoint = "CadastrarEstudante";
+                }
                 
                 const response = await fetch(`http://localhost:3000/api/${endpoint}`, {
                     method: 'POST',
@@ -314,6 +340,8 @@
                 document.getElementById('cidade').disabled = true;
                 document.getElementById('visitor').checked = false;
                 document.getElementById('angel').checked = false;
+                document.getElementById('estudante').checked = false;
+                document.getElementById('estudanteEstrangeiro').checked = false;
             } catch (error) {
                 console.error('Erro:', error);
                 document.getElementById('error-message').textContent = error.message || "Erro no cadastro";
