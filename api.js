@@ -3,8 +3,12 @@ const router = express.Router();
 const {
     cadastrarAngel,
     cadastrarVisitor,
+    cadastrarEstudante,
+    cadastrarEstudanteEstrangeiro,
     listarAngels,
     listarVisitors,
+    listarEstudante,
+    listarEstudanteEstrangeiro,
     login
 } = require('./controllers');
 
